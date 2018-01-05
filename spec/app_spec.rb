@@ -50,4 +50,37 @@ RSpec.describe Application do
       end
     end
   end
+
+  context "GET /:short_url" do
+    context 'when a url has been stored' do
+      before do
+        post "/", { "url" => "helloworld.com" }.to_json
+      end
+
+      it 'returns the url' do
+        short_url = JSON.parse(last_response.body)["short_url"]
+
+        get "/#{short_url}"
+
+        body = JSON.parse(last_response.body)
+        expect(body["url"]).to eql("http://helloworld.com")
+      end
+
+      it 'returns status 301' do
+        short_url = JSON.parse(last_response.body)["short_url"]
+
+        get "/#{short_url}"
+
+        expect(last_response.status).to eql(301)
+      end
+    end
+
+    context 'when an invalid request is made' do
+      it "returns 404" do
+        get "/random"
+
+        expect(last_response.status).to eql(404)
+      end
+    end
+  end
 end

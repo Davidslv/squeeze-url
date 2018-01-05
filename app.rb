@@ -17,6 +17,15 @@ class Application < Sinatra::Application
 
     {"short_url" => short_url, "url" => url}.to_json
   end
+
+  get '/:short_url' do
+    short_url = params["short_url"]
+    url = @url_storage.read(short_url)
+
+    halt(404) unless url
+
+    redirect(url, 301, { "url" => url }.to_json)
+  end
 end
 
 Application.run! unless ENV['RACK_ENV'] == "test"
