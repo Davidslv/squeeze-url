@@ -39,7 +39,11 @@ class UrlStorage
   end
 
   def validate(url)
-    if (url =~ URI.regexp).nil?
+    tld = url.split('.')
+
+    # naive approach, assuming that a URL with no dot does not have a TLD
+    # it seems the URI.regexp doesn't account for that case.
+    if (url =~ URI.regexp).nil? || tld.size == 1
       raise RequestError, "Invalid URL has been provided: #{url}"
     end
   end

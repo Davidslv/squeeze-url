@@ -31,6 +31,14 @@ RSpec.describe UrlStorage do
         ).to eql("http://helloworld.com")
       end
     end
+
+    context 'when a url is invalid' do
+      it 'should raise a RequestError' do
+        expect {
+          url_storage.save("helloworld")
+        }.to raise_error(RequestError, "Invalid URL has been provided: http://helloworld")
+      end
+    end
   end
 
   describe '#read' do
